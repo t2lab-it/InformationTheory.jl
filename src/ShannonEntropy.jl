@@ -85,10 +85,33 @@ function shannon(
 end
 
 
+"""
+    KSG(; k::Int = 5)
+
+A method for calculating Shannon entropy using the Kozachenko-Leonenko (KSG) estimator.
+
+# Fields
+- `k::Int`: The number of nearest neighbors to consider for each point.
+"""
 Base.@kwdef struct KSG <: ShannonEntropyMethod
     k::Int = 5
 end
 
+"""
+    shannon(method::KSG, x::AbstractVector...)
+
+Calculates the Shannon entropy of a set of variables `x` using the KSG estimator.
+
+# Arguments
+- `method::KSG`: The KSG Shannon entropy calculation method.
+- `x::AbstractVector...`: One or more vectors representing the data for which to calculate the entropy. Each vector is a dimension of the data.
+
+# Returns
+- `H::Float64`: The calculated Shannon entropy.
+
+# Details
+The function uses the k-nearest neighbors (k-NN) algorithm to estimate the probability density function (PDF) of the data. The Shannon entropy is then calculated based on the distances to the k-th nearest neighbors. This method is particularly useful for high-dimensional data.
+"""
 function shannon(
     method::KSG,
     x::AbstractVector...
