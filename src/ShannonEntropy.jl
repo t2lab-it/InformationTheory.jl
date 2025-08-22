@@ -1,10 +1,11 @@
 module ShannonEntropy
 
 export ShannonEntropyMethod
-export Hist
+export Hist, KSG
 export shannon
 
 using StatsBase
+using NearestNeighbors
 using ..Utils
 
 """
@@ -82,5 +83,37 @@ function shannon(
     return H
 
 end
+
+
+Base.@kwdef struct KSG <: ShannonEntropyMethod
+    k::Int = 5
+end
+
+function shannon(
+    method::KSG,
+    x::AbstractVector...
+)
+
+    n = length(x) # Number of dimensions
+    datanum = length(x[1]) # Number of data points
+    points = transpose(hcat(x...)) # Combine the input vectors into a matrix
+    k = method.k # Number of neighbors for KSG
+    kdtree = KDTree(points, Chebyshev()) # Build a KDTree for efficient neighbor search
+    H = 0.0 # Shannon entropy
+
+    for i in 1:datanum
+        # Find the k nearest neighbors for the i-th point.
+        point = points[:, i]
+        neighbors = knn(kdtree, point, k + 1)
+        # Estimate the entropy contribution from the neighbors.
+        H += log(neighbors[2][1] * 2.0)
+    end
+    H = n / datanum * H # Normalize by the number of dimensions
+    H += -Utils.digamma(k) + Utils.digamma(datanum)
+
+    return H
+
+end
+
 
 end
