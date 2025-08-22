@@ -7,36 +7,74 @@ export shannon
 using StatsBase
 using ..Utils
 
+"""
+    ShannonEntropyMethod
+
+An abstract type for different methods of calculating Shannon entropy.
+"""
 abstract type ShannonEntropyMethod end
 
+"""
+    Hist(; bins::Tuple = (-1,))
+
+A method for calculating Shannon entropy using histograms.
+
+# Fields
+- `bins::Tuple`: A tuple specifying the binning strategy for the histogram.
+                 If `(-1,)`, the binning is determined automatically by `StatsBase.fit`.
+                 Otherwise, a tuple of bin edges for each dimension should be provided.
+"""
 Base.@kwdef struct Hist <: ShannonEntropyMethod
     bins::Tuple = (-1,)
 end
 
+"""
+    shannon(method::Hist, x::AbstractVector...)
+
+Calculates the Shannon entropy of a set of variables `x` using a histogram-based method.
+
+# Arguments
+- `method::Hist`: The histogram-based Shannon entropy calculation method.
+- `x::AbstractVector...`: One or more vectors representing the data for which to calculate the entropy. Each vector is a dimension of the data.
+
+# Returns
+- `H::Float64`: The calculated Shannon entropy.
+
+# Details
+The function first fits a histogram to the data `x`. The probability density function (PDF) is then approximated from the histogram. Finally, the Shannon entropy is calculated by integrating `-p(x) * log(p(x))` over the domain of `x`, where `p(x)` is the PDF.
+"""
 function shannon(
     method::Hist,
     x::AbstractVector...
 )
 
-    n = length(x)
-    datanum = length(x[1])
-    p = nothing
-    H = 0.0
+    n = length(x) # Number of dimensions
+    datanum = length(x[1]) # Number of data points
+    p = nothing # Histogram object
+    H = 0.0 # Shannon entropy
 
+    # Fit a histogram to the data.
     if method.bins == (-1,)
+        # If bins are not specified, use automatic binning.
         p = fit(Histogram, x)
     else
+        # If bins are specified, check for compatible dimensions.
         (length(method.bins) != length(x)) ? error("Incompatible bin and data dimensions") : nothing
+        # Use the specified bins.
         p = fit(Histogram, x, method.bins)
     end
 
+    # Calculate the entropy from the histogram.
     for idx in CartesianIndices(p.weights)
-        dx = 1.0
+        dx = 1.0 # Volume of the bin
         for i in 1:n
-            dx *= p.edges[i][idx.I[i] + 1] - p.edges[i][idx.I[i]]
+            # Calculate the width of the bin in each dimension.
+            dx *= p.edges[i][idx.I[i]+1] - p.edges[i][idx.I[i]]
         end
+        # Calculate the probability density in the bin.
         pdf = p.weights[idx] / dx / datanum
-        if pdf >= 1.0e-10
+        if pdf >= 1.0e-10 # Avoid taking the log of zero.
+            # Add the contribution of the bin to the entropy.
             H -= pdf * log(pdf) * dx
         end
     end
