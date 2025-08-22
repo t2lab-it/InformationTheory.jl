@@ -1,5 +1,9 @@
 module InformationTheory
 
-# Write your package code here.
+include("Utils.jl")
+using .Utils
+
+include("ShannonEntropy.jl")
+using .ShannonEntropy
 
 end

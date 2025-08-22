@@ -1,6 +1,7 @@
 using InformationTheory
 using Test
 
-@testset "InformationTheory.jl" begin
+@testset "ShannonEntropy.jl" begin
     # Write your tests here.
+    include("ShannonEntropy.jl")
 end
