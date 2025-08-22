@@ -10,5 +10,8 @@ Documentation for [InformationTheory](https://github.com/tkrhsmt/InformationTheo
 ```
 
 ```@autodocs
-Modules = [InformationTheory]
+Modules = [
+    InformationTheory,
+    InformationTheory.ShannonEntropy
+]
 ```
