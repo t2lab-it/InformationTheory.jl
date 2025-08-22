@@ -5,13 +5,11 @@ version = "1.0.0-DEV"
 
 [deps]
 Associations = "614afb3a-e278-4863-8805-9959372b9ec2"
-CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 Associations = "4.5.0"
-CairoMakie = "0.12.9"
 Distributions = "0.25.120"
 StatsBase = "0.34.6"
 julia = "1.6.7"
