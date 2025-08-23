@@ -9,4 +9,7 @@ using .ShannonEntropy
 include("MutualInformation.jl")
 using .MutualInformation
 
+include("KLdivergence.jl")
+using .KLdivergence
+
 end

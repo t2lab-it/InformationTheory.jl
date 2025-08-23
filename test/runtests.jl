@@ -10,3 +10,8 @@ end
     # Write your tests here.
     include("MutualInformation.jl")
 end
+
+@testset "KLdivergence.jl" begin
+    # Write your tests here.
+    include("KLdivergence.jl")
+end
