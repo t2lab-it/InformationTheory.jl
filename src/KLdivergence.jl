@@ -86,4 +86,43 @@ function kldiv(
 
 end
 
+Base.@kwdef struct KSG <: KLdivergenceMethod
+    k::Int = 5
+end
+
+function kldiv(
+    method::KSG,
+    x::Tuple,
+    y::Tuple
+)
+
+    datanum_x = length(x[1]) # Number of data points
+    datanum_y = length(y[1]) # Number of data points
+    D = 0.0 # KL divergence
+
+    points_x = transpose(hcat(x...))
+    points_y = transpose(hcat(y...)) # Combine the input vectors into a matrix
+    k = method.k # Number of neighbors for KSG
+    kdtree_x = KDTree(points_x, Chebyshev())
+    kdtree_y = KDTree(points_y, Chebyshev())
+
+    for i in 1:datanum_x
+        # Find the k nearest neighbors for the i-th point.
+        point_x = points_x[:, i]
+        ρ = knn(kdtree_x, point_x, k + 1)[2][1]
+        ν = knn(kdtree_y, point_x, k)[2][1]
+
+        distance = maximum(hcat(ρ, ν))
+
+        Nx = inrangecount(kdtree_x, point_x, distance) - 1
+        Ny = inrangecount(kdtree_y, point_x, distance)
+
+        D += Utils.digamma(Nx) - Utils.digamma(Ny)
+    end
+    D /= datanum_x
+    D += log(datanum_y / (datanum_x - 1))
+
+    return D
+end
+
 end
