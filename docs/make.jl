@@ -17,6 +17,7 @@ makedocs(;
         "API" => [
             "Shannon Entropy" => "API/ShannonEntropy.md",
             "Mutual Information" => "API/MutualInformation.md",
+            "KL Divergence" => "API/KLdivergence.md",
         ],
     ],
 )

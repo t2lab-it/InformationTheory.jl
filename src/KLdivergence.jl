@@ -1,15 +1,33 @@
 module KLdivergence
 
 export MutualInformationMethod
-export Hist#, KSG
+export Hist, kNN
 export kldiv
 
 using StatsBase
 using NearestNeighbors
 using ..Utils
 
+"""
+    KLdivergenceMethod
+
+An abstract type for different methods of calculating KL divergence.
+"""
 abstract type KLdivergenceMethod end
 
+"""
+    Hist(; bins_x::Tuple = (-1,), bins_y::Tuple = (-1,))
+
+A method for calculating KL divergence using histograms.
+
+# Fields
+- `bins_x::Tuple`: A tuple specifying the binning strategy for the histogram of the first distribution (P).
+                 If `(-1,)`, the binning is determined automatically by `StatsBase.fit`.
+                 Otherwise, a tuple of bin edges for each dimension should be provided.
+- `bins_y::Tuple`: A tuple specifying the binning strategy for the histogram of the second distribution (Q).
+                 If `(-1,)`, the binning is determined automatically by `StatsBase.fit`.
+                 Otherwise, a tuple of bin edges for each dimension should be provided.
+"""
 Base.@kwdef struct Hist <: KLdivergenceMethod
     bins_x::Tuple = (-1,)
     bins_y::Tuple = (-1,)
@@ -39,6 +57,22 @@ function kldiv(
     return kldiv(method, (x,), y)
 end
 
+"""
+    kldiv(method::Hist, x::Tuple, y::Tuple)
+
+Calculates the KL divergence between two distributions, P and Q, represented by data `x` and `y`, using a histogram-based method.
+
+# Arguments
+- `method::Hist`: The histogram-based KL divergence calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for the first distribution (P). Each vector is a dimension.
+- `y::Tuple`: A tuple of vectors representing the data for the second distribution (Q). Each vector is a dimension.
+
+# Returns
+- `D::Float64`: The calculated KL divergence D(P||Q).
+
+# Details
+The function fits histograms to the data `x` and `y` to approximate their probability density functions (PDFs), p(x) and q(y). The KL divergence is then calculated by integrating `p(x) * log(p(x) / q(y))` over the domain.
+"""
 function kldiv(
     method::Hist,
     x::Tuple,
@@ -86,12 +120,36 @@ function kldiv(
 
 end
 
-Base.@kwdef struct KSG <: KLdivergenceMethod
+"""
+    kNN(; k::Int = 5)
+
+A method for calculating KL divergence using a k-nearest neighbors (k-NN) based estimator.
+
+# Fields
+- `k::Int`: The number of nearest neighbors to consider for each point.
+"""
+Base.@kwdef struct kNN <: KLdivergenceMethod
     k::Int = 5
 end
 
+"""
+    kldiv(method::kNN, x::Tuple, y::Tuple)
+
+Calculates the KL divergence between two distributions, P and Q, represented by data `x` and `y`, using a k-NN based method.
+
+# Arguments
+- `method::kNN`: The k-NN based KL divergence calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for the first distribution (P).
+- `y::Tuple`: A tuple of vectors representing the data for the second distribution (Q).
+
+# Returns
+- `D::Float64`: The calculated KL divergence D(P||Q).
+
+# Details
+This function uses a non-parametric method to estimate KL divergence based on the distances to the k-nearest neighbors in the data `x` and `y`. It is particularly useful for high-dimensional data.
+"""
 function kldiv(
-    method::KSG,
+    method::kNN,
     x::Tuple,
     y::Tuple
 )
@@ -102,7 +160,7 @@ function kldiv(
 
     points_x = transpose(hcat(x...))
     points_y = transpose(hcat(y...)) # Combine the input vectors into a matrix
-    k = method.k # Number of neighbors for KSG
+    k = method.k # Number of neighbors for kNN
     kdtree_x = KDTree(points_x, Chebyshev())
     kdtree_y = KDTree(points_y, Chebyshev())
 

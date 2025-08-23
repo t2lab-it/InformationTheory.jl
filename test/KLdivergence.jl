@@ -23,13 +23,13 @@ kl_hist_bins = InformationTheory.kldiv(InformationTheory.KLdivergence.Hist(bins_
 println("Exact D(p||q): $kl_exact\t\t\t Histogram D(p||q): $kl_hist_bins\t error: $(abs(kl_hist_bins - kl_exact))")
 @test kl_hist_bins ≈ kl_exact rtol = 0.1
 
-println("---------- ksg estimator method ----------")
+println("---------- kNN estimator method ----------")
 
-# Estimate entropy using a ksg estimator
-kl_ksg = InformationTheory.kldiv(InformationTheory.KLdivergence.KSG(k = 10), x_data, y_data)
-println("Exact D(p||q): $kl_exact\t\t\t KSG D(p||q): $kl_ksg\t error: $(abs(kl_ksg - kl_exact))")
-@test kl_ksg ≈ kl_exact rtol = 0.1
+# Estimate entropy using a kNN estimator
+kl_kNN = InformationTheory.kldiv(InformationTheory.KLdivergence.kNN(k = 10), x_data, y_data)
+println("Exact D(p||q): $kl_exact\t\t\t kNN D(p||q): $kl_kNN\t error: $(abs(kl_kNN - kl_exact))")
+@test kl_kNN ≈ kl_exact rtol = 0.1
 
-kl_ksg = InformationTheory.kldiv(InformationTheory.KLdivergence.KSG(k = 10), x_data, z_data)
-println("Exact D(p||q): $kl_exact2\t KSG D(p||q): $kl_ksg\t error: $(abs(kl_ksg - kl_exact2))")
-@test kl_ksg ≈ kl_exact2 rtol = 0.1
+kl_kNN = InformationTheory.kldiv(InformationTheory.KLdivergence.kNN(k = 10), x_data, z_data)
+println("Exact D(p||q): $kl_exact2\t kNN D(p||q): $kl_kNN\t error: $(abs(kl_kNN - kl_exact2))")
+@test kl_kNN ≈ kl_exact2 rtol = 0.1
