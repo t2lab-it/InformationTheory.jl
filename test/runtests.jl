@@ -15,3 +15,8 @@ end
     # Write your tests here.
     include("KLdivergence.jl")
 end
+
+@testset "ConditionalMutualInformation.jl" begin
+    # Write your tests here.
+    include("ConditionalMutualInformation.jl")
+end

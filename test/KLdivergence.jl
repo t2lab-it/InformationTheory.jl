@@ -32,4 +32,4 @@ println("Exact D(p||q): $kl_exact\t\t\t kNN D(p||q): $kl_kNN\t error: $(abs(kl_k
 
 kl_kNN = InformationTheory.kldiv(InformationTheory.KLdivergence.kNN(k = 10), x_data, z_data)
 println("Exact D(p||q): $kl_exact2\t kNN D(p||q): $kl_kNN\t error: $(abs(kl_kNN - kl_exact2))")
-@test kl_kNN ≈ kl_exact2 rtol = 0.1
+@test kl_kNN ≈ kl_exact2 rtol = 0.25

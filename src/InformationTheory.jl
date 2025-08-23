@@ -12,4 +12,7 @@ using .MutualInformation
 include("KLdivergence.jl")
 using .KLdivergence
 
+include("ConditionalMutualInformation.jl")
+using .ConditionalMutualInformation
+
 end
