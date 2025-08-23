@@ -1,7 +1,7 @@
 module MutualInformation
 
 export MutualInformationMethod
-export Hist#, KSG
+export Hist, KSG
 export mutual
 
 using StatsBase
@@ -50,10 +50,12 @@ function mutual(
     y::Tuple
 )
 
-    nx = length(x); ny = length(y) # Number of dimensions x and y
+    nx = length(x)
+    ny = length(y) # Number of dimensions x and y
     datanum = length(x[1]) # Number of data points
     pxy = nothing # Histogram object p(x,y)
-    px = nothing; py = nothing # Histogram object p(x) and p(y)
+    px = nothing
+    py = nothing # Histogram object p(x) and p(y)
     I = 0.0 # Mutual information
 
     # Fit a histogram to the data.
@@ -96,6 +98,45 @@ function mutual(
 
     return I
 
+end
+
+Base.@kwdef struct KSG <: MutualInformationMethod
+    k::Int = 5
+end
+
+function mutual(
+    method::KSG,
+    x::Tuple,
+    y::Tuple
+)
+
+    nx = length(x)
+    ny = length(y) # Number of dimensions x and y
+    datanum = length(x[1]) # Number of data points
+    I = 0.0 # Mutual information
+
+    points_x = transpose(hcat(x...))
+    points_y = transpose(hcat(y...)) # Combine the input vectors into a matrix
+    k = method.k # Number of neighbors for KSG
+    kdtree_x = KDTree(points_x, Chebyshev())
+    kdtree_y = KDTree(points_y, Chebyshev())
+    kdtree_xy = KDTree(vcat(points_x, points_y), Chebyshev()) # Build a KDTree for efficient neighbor search
+
+    for i in 1:datanum
+        # Find the k nearest neighbors for the i-th point.
+        point_x = points_x[:, i]
+        point_y = points_y[:, i]
+        point_xy = vcat(point_x, point_y)
+        neighbors_xy = knn(kdtree_xy, point_xy, k + 1)
+
+        Nx = inrangecount(kdtree_x, point_x, neighbors_xy[2][1]) - 1
+        Ny = inrangecount(kdtree_y, point_y, neighbors_xy[2][1]) - 1
+        I -= Utils.digamma(Nx + 1) + Utils.digamma(Ny + 1)
+    end
+    I /= datanum
+    I += Utils.digamma(datanum) + Utils.digamma(k)
+
+    return I
 end
 
 end
