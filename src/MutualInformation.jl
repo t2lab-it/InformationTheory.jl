@@ -39,11 +39,40 @@ function mutual(
     return mutual(method, (x,), y)
 end
 
+"""
+    Hist(; bins_x::Tuple = (-1,), bins_y::Tuple = (-1,))
+
+A method for calculating mutual information using histograms.
+
+# Fields
+- `bins_x::Tuple`: A tuple specifying the binning strategy for the histogram of x.
+                 If `(-1,)`, the binning is determined automatically by `StatsBase.fit`.
+                 Otherwise, a tuple of bin edges for each dimension should be provided.
+- `bins_y::Tuple`: A tuple specifying the binning strategy for the histogram of y.
+                 If `(-1,)`, the binning is determined automatically by `StatsBase.fit`.
+                 Otherwise, a tuple of bin edges for each dimension should be provided.
+"""
 Base.@kwdef struct Hist <: MutualInformationMethod
     bins_x::Tuple = (-1,)
     bins_y::Tuple = (-1,)
 end
 
+"""
+    mutual(method::Hist, x::Tuple, y::Tuple)
+
+Calculates the mutual information between two sets of variables `x` and `y` using a histogram-based method.
+
+# Arguments
+- `method::Hist`: The histogram-based mutual information calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for the first variable.
+- `y::Tuple`: A tuple of vectors representing the data for the second variable.
+
+# Returns
+- `I::Float64`: The calculated mutual information.
+
+# Details
+The function first fits a histogram to the joint data `(x, y)`. The probability density functions (PDFs) `p(x,y)`, `p(x)`, and `p(y)` are then approximated from the histogram. Finally, the mutual information is calculated by integrating `p(x,y) * log(p(x,y) / (p(x) * p(y)))` over the domain of `x` and `y`.
+"""
 function mutual(
     method::Hist,
     x::Tuple,
@@ -100,10 +129,34 @@ function mutual(
 
 end
 
+"""
+    KSG(; k::Int = 5)
+
+A method for calculating mutual information using the Kozachenko-Leonenko-Granger (KSG) estimator.
+
+# Fields
+- `k::Int`: The number of nearest neighbors to consider for each point.
+"""
 Base.@kwdef struct KSG <: MutualInformationMethod
     k::Int = 5
 end
 
+"""
+    mutual(method::KSG, x::Tuple, y::Tuple)
+
+Calculates the mutual information between two sets of variables `x` and `y` using the KSG estimator.
+
+# Arguments
+- `method::KSG`: The KSG mutual information calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for the first variable.
+- `y::Tuple`: A tuple of vectors representing the data for the second variable.
+
+# Returns
+- `I::Float64`: The calculated mutual information.
+
+# Details
+The function uses the k-nearest neighbors (k-NN) algorithm to estimate the mutual information. This method is particularly useful for high-dimensional data. It is based on the work of Kraskov, Stögbauer, and Grassberger (2004).
+"""
 function mutual(
     method::KSG,
     x::Tuple,
