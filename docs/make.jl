@@ -14,6 +14,10 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "API" => [
+            "Shannon Entropy" => "API/ShannonEntropy.md",
+            "Mutual Information" => "API/MutualInformation.md",
+        ],
     ],
 )
 
