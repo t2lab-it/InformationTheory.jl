@@ -3,6 +3,6 @@
 
 ```@autodocs
 Modules = [
-    InformationTheory.ShannonEntropy
+    InformationTheory.MutualInformation
 ]
 ```
