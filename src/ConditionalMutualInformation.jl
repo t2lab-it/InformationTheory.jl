@@ -1,7 +1,7 @@
 module ConditionalMutualInformation
 
 export ConditionalMutualInformationMethod
-export Hist#, kNN
+export Hist, kNN
 export c_mutual
 
 using StatsBase
@@ -101,6 +101,54 @@ function c_mutual(
 
     return I
 
+end
+
+Base.@kwdef struct kNN <: ConditionalMutualInformationMethod
+    k::Int = 5
+end
+
+function c_mutual(
+    method::kNN,
+    x::Tuple,
+    y::Tuple,
+    z::Tuple
+)
+
+    nx = length(x) # Number of dimensions x
+    ny = length(y) # Number of dimensions y
+    nz = length(z) # Number of dimensions z
+    datanum = length(x[1]) # Number of data points
+    I = 0.0 # Mutual information
+
+    points_x = transpose(hcat(x...)) # Combine the input vectors into a matrix
+    points_y = transpose(hcat(y...)) # Combine the input vectors into a matrix
+    points_z = transpose(hcat(z...)) # Combine the input vectors into a matrix
+    k = method.k # Number of neighbors for kNN
+
+    # Build a KDTree for efficient neighbor search
+    kdtree_xyz = KDTree(vcat(points_x, vcat(points_y, points_z)), Chebyshev())
+    kdtree_xz = KDTree(vcat(points_x, points_z), Chebyshev())
+    kdtree_yz = KDTree(vcat(points_y, points_z), Chebyshev())
+    kdtree_z = KDTree(points_z, Chebyshev())
+
+    for i in 1:datanum
+        # Find the k nearest neighbors for the i-th point.
+        point_x = points_x[:, i]
+        point_y = points_y[:, i]
+        point_z = points_z[:, i]
+        point_xyz = vcat(point_x, vcat(point_y, point_z))
+        neighbors_xyz = knn(kdtree_xyz, point_xyz, k + 1)
+
+        Nz = inrangecount(kdtree_z, point_z, neighbors_xyz[2][1]) - 1
+        Nxz = inrangecount(kdtree_xz, vcat(point_x, point_z), neighbors_xyz[2][1]) - 1
+        Nyz = inrangecount(kdtree_yz, vcat(point_y, point_z), neighbors_xyz[2][1]) - 1
+
+        I += Utils.digamma(Nz + 1) - Utils.digamma(Nxz + 1) - Utils.digamma(Nyz + 1)
+    end
+    I /= datanum
+    I += Utils.digamma(k)
+
+    return I
 end
 
 end
