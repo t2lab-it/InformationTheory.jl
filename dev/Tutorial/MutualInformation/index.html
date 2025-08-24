@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Mutual Information · InformationTheory.jl</title><meta name="title" content="Mutual Information · InformationTheory.jl"/><meta property="og:title" content="Mutual Information · InformationTheory.jl"/><meta property="twitter:title" content="Mutual Information · InformationTheory.jl"/><meta name="description" content="Documentation for InformationTheory.jl."/><meta property="og:description" content="Documentation for InformationTheory.jl."/><meta property="twitter:description" content="Documentation for InformationTheory.jl."/><meta property="og:url" content="https://tkrhsmt.github.io/InformationTheory.jl/Tutorial/MutualInformation/"/><meta property="twitter:url" content="https://tkrhsmt.github.io/InformationTheory.jl/Tutorial/MutualInformation/"/><link rel="canonical" href="https://tkrhsmt.github.io/InformationTheory.jl/Tutorial/MutualInformation/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">InformationTheory.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">API</span><ul><li><a class="tocitem" href="../../API/ShannonEntropy/">Shannon Entropy</a></li><li><a class="tocitem" href="../../API/MutualInformation/">Mutual Information</a></li><li><a class="tocitem" href="../../API/KLdivergence/">KL Divergence</a></li><li><a class="tocitem" href="../../API/ConditionalMutualInformation/">Conditional Mutual Information</a></li></ul></li><li><span class="tocitem">Tutorial</span><ul><li><a class="tocitem" href="../ShannonEntropy/">Shannon Entropy</a></li><li class="is-active"><a class="tocitem" href>Mutual Information</a><ul class="internal"><li><a class="tocitem" href="#相互情報量"><span>相互情報量</span></a></li><li><a class="tocitem" href="#高次元の相互情報量"><span>高次元の相互情報量</span></a></li><li><a class="tocitem" href="#参考文献"><span>参考文献</span></a></li></ul></li><li><a class="tocitem" href="../KLdivergence/">KL Divergence</a></li><li><a class="tocitem" href="../ConditionalMutualInformation/">Conditional Mutual Information</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorial</a></li><li class="is-active"><a href>Mutual Information</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Mutual Information</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/tkrhsmt/InformationTheory.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/tkrhsmt/InformationTheory.jl/blob/main/docs/src/Tutorial/MutualInformation.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Mutual-Information"><a class="docs-heading-anchor" href="#Mutual-Information">Mutual Information</a><a id="Mutual-Information-1"></a><a class="docs-heading-anchor-permalink" href="#Mutual-Information" title="Permalink"></a></h1><p>このページでは，相互情報量 (mutual information) の計算関数<code>mutual</code>について説明します．</p><h2 id="相互情報量"><a class="docs-heading-anchor" href="#相互情報量">相互情報量</a><a id="相互情報量-1"></a><a class="docs-heading-anchor-permalink" href="#相互情報量" title="Permalink"></a></h2><p>2変数に対する相互情報量</p><p class="math-container">\[    I(X:Y) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} p(x, y) \ln \frac{p(x, y)}{p(x)p(y)} \ \mathrm{d}x \mathrm{d}y\]</p><p>です．</p><h3 id="ヒストグラムを使った計算例"><a class="docs-heading-anchor" href="#ヒストグラムを使った計算例">ヒストグラムを使った計算例</a><a id="ヒストグラムを使った計算例-1"></a><a class="docs-heading-anchor-permalink" href="#ヒストグラムを使った計算例" title="Permalink"></a></h3><p>以下は，ヒストグラム推定を使った計算例です．</p><pre><code class="language-julia hljs">using InformationTheory
+
+# 正規分布に基づくランダムデータを生成
+x = randn(10000)
+y = randn(10000)
+
+# ヒストグラム推定を使うことを指定
+est = MutualInformation.Hist()
+
+# 相互情報量の推定
+mi = mutual(est, x, y)
+
+# 結果の出力
+println(mi)</code></pre><p>ヒストグラムを使用する際には，<code>bins</code>を指定できます．</p><pre><code class="language-julia hljs">est = MutualInformation.Hist(bins = (-5:0.25:5, -5:0.25:5))</code></pre><h3 id="k-近傍法を使った計算例"><a class="docs-heading-anchor" href="#k-近傍法を使った計算例">k-近傍法を使った計算例</a><a id="k-近傍法を使った計算例-1"></a><a class="docs-heading-anchor-permalink" href="#k-近傍法を使った計算例" title="Permalink"></a></h3><p>k-近傍法は，Kraskov et. al.(2004)が提案した手法に基づいて計算されます． 論文中では<span>$I^{(1)}$</span>と<span>$I^{(2)}$</span>が提案されていますが，ここでは<span>$I^{(1)}$</span>の方法を採用して，</p><p class="math-container">\[    I(X:Y) = \psi(k) + \psi(N)- \langle \psi(n_x + 1) + \psi(n_y + 1) \rangle\]</p><p>で計算します． <span>$\psi$</span>はディガンマ関数で，<span>$N$</span>はデータ数です． <span>$n_x$</span>と<span>$n_y$</span>は，各点の最近傍距離<span>$\epsilon_k$</span>内に存在する点の数を表します． この距離は，<code>NearestNeighbors.jl</code>のkd木を使用して高速に推定されます． 距離推定には論文で提示されている通り，Chebyshev距離を用いています．</p><pre><code class="language-julia hljs">using InformationTheory
+
+# 正規分布に基づくランダムデータを生成
+x = randn(10000)
+y = randn(10000)
+
+# KSG推定を使うことを指定
+est = MutualInformation.KSG()
+
+# 相互情報量の推定
+mi = mutual(est, x, y)
+
+# 結果の出力
+println(mi)</code></pre><p>k-近傍法では，<code>k</code>を指定できます．</p><pre><code class="language-julia hljs">est = MutualInformation.KSG(k = 10)</code></pre><h2 id="高次元の相互情報量"><a class="docs-heading-anchor" href="#高次元の相互情報量">高次元の相互情報量</a><a id="高次元の相互情報量-1"></a><a class="docs-heading-anchor-permalink" href="#高次元の相互情報量" title="Permalink"></a></h2><p>より高次元の相互情報量</p><p class="math-container">\[    I([X_1, X_2, \dots] : [Y_1, Y_2, \dots])\]</p><p>についても推定可能です．</p><h3 id="ヒストグラムを使った計算例-2"><a class="docs-heading-anchor" href="#ヒストグラムを使った計算例-2">ヒストグラムを使った計算例</a><a class="docs-heading-anchor-permalink" href="#ヒストグラムを使った計算例-2" title="Permalink"></a></h3><p>ここでは，<span>$I([X_1, X_2]:[Y_1,Y_2])$</span>を推定する例を示します．</p><pre><code class="language-julia hljs">using InformationTheory
+
+# 正規分布に基づくランダムデータを生成
+x1 = randn(10000)
+x2 = randn(10000)
+y1 = randn(10000)
+y2 = randn(10000)
+
+# ヒストグラム推定を使うことを指定
+est = MutualInformation.Hist()
+
+# 相互情報量の推定
+mi = mutual(est, (x1, x2), (y1, y2))
+
+# 結果の出力
+println(mi)</code></pre><h3 id="k-近傍法を使った計算例-2"><a class="docs-heading-anchor" href="#k-近傍法を使った計算例-2">k-近傍法を使った計算例</a><a class="docs-heading-anchor-permalink" href="#k-近傍法を使った計算例-2" title="Permalink"></a></h3><pre><code class="language-julia hljs">using InformationTheory
+
+# 正規分布に基づくランダムデータを生成
+x1 = randn(10000)
+x2 = randn(10000)
+y1 = randn(10000)
+y2 = randn(10000)
+
+# KSG推定を使うことを指定
+est = MutualInformation.KSG()
+
+# 相互情報量の推定
+mi = mutual(est, (x1, x2), (y1, y2))
+
+# 結果の出力
+println(mi)</code></pre><p>次元の数には制限ありませんが，高次元になるほど推定精度は下がり，推定時間も伸びます．</p><h2 id="参考文献"><a class="docs-heading-anchor" href="#参考文献">参考文献</a><a id="参考文献-1"></a><a class="docs-heading-anchor-permalink" href="#参考文献" title="Permalink"></a></h2><ul><li>Kraskov A., Stögbauer H., Grassberger P., Estimating mutual information, Phys. Rev. E, Vol. 69 (2004), p. 066138.</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../ShannonEntropy/">« Shannon Entropy</a><a class="docs-footer-nextpage" href="../KLdivergence/">KL Divergence »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Sunday 24 August 2025 15:48">Sunday 24 August 2025</span>. Using Julia version 1.11.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
