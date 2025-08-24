@@ -20,6 +20,12 @@ makedocs(;
             "KL Divergence" => "API/KLdivergence.md",
             "Conditional Mutual Information" => "API/ConditionalMutualInformation.md",
         ],
+        "Tutorial" => [
+            "Shannon Entropy" => "Tutorial/ShannonEntropy.md",
+            "Mutual Information" => "Tutorial/MutualInformation.md",
+            "KL Divergence" => "Tutorial/KLdivergence.md",
+            "Conditional Mutual Information" => "Tutorial/ConditionalMutualInformation.md",
+        ]
     ],
 )
 

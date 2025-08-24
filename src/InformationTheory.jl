@@ -1,7 +1,10 @@
 module InformationTheory
 
+export shannon, mutual, kldiv, c_mutual
+export ShannonEntropy, MutualInformation, KLdivergence, ConditionalMutualInformation
+
 include("Utils.jl")
-using .Utils
+export Utils
 
 include("ShannonEntropy.jl")
 using .ShannonEntropy
