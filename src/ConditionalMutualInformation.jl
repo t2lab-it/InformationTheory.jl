@@ -8,6 +8,11 @@ using StatsBase
 using NearestNeighbors
 using ..Utils
 
+"""
+    ConditionalMutualInformationMethod
+
+An abstract type for different methods of calculating conditional mutual information.
+"""
 abstract type ConditionalMutualInformationMethod end
 
 function c_mutual(method::ConditionalMutualInformationMethod, x::AbstractVector, y::AbstractVector, z::AbstractVector)
@@ -30,12 +35,43 @@ function c_mutual(method::ConditionalMutualInformationMethod, x::AbstractVector,
     return c_mutual(method, (x,), y, z)
 end
 
+"""
+    Hist(; bins_x::Tuple = (-1,), bins_y::Tuple = (-1,), bins_z::Tuple = (-1,))
+
+A method for calculating conditional mutual information using histograms.
+
+# Fields
+- `bins_x::Tuple`: A tuple specifying the binning strategy for the `x` variable.
+- `bins_y::Tuple`: A tuple specifying the binning strategy for the `y` variable.
+- `bins_z::Tuple`: A tuple specifying the binning strategy for the `z` variable.
+  If `(-1,)` for a variable, the binning is determined automatically by `StatsBase.fit`.
+  Otherwise, a tuple of bin edges for each dimension should be provided.
+"""
 Base.@kwdef struct Hist <: ConditionalMutualInformationMethod
     bins_x::Tuple = (-1,)
     bins_y::Tuple = (-1,)
     bins_z::Tuple = (-1,)
 end
 
+"""
+    c_mutual(method::Hist, x::Tuple, y::Tuple, z::Tuple)
+
+Calculates the conditional mutual information `I(X;Y|Z)` using a histogram-based method.
+
+# Arguments
+- `method::Hist`: The histogram-based calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for variable X.
+- `y::Tuple`: A tuple of vectors representing the data for variable Y.
+- `z::Tuple`: A tuple of vectors representing the data for variable Z.
+
+# Returns
+- `I::Float64`: The calculated conditional mutual information.
+
+# Details
+The function first fits a histogram to the joint data `(x, y, z)`. The probability density function (PDF) is then approximated from the histogram. Finally, the conditional mutual information is calculated from the joint and marginal probabilities.
+The formula used is:
+`I(X;Y|Z) = sum(p(x,y,z) * log(p(x,y,z) * p(z) / (p(x,z) * p(y,z))))`
+"""
 function c_mutual(
     method::Hist,
     x::Tuple,
@@ -103,10 +139,35 @@ function c_mutual(
 
 end
 
+"""
+    kNN(; k::Int = 5)
+
+A method for calculating conditional mutual information using the k-Nearest Neighbors (k-NN) estimator.
+
+# Fields
+- `k::Int`: The number of nearest neighbors to consider for each point.
+"""
 Base.@kwdef struct kNN <: ConditionalMutualInformationMethod
     k::Int = 5
 end
 
+"""
+    c_mutual(method::kNN, x::Tuple, y::Tuple, z::Tuple)
+
+Calculates the conditional mutual information `I(X;Y|Z)` using a k-NN based method.
+
+# Arguments
+- `method::kNN`: The k-NN based calculation method.
+- `x::Tuple`: A tuple of vectors representing the data for variable X.
+- `y::Tuple`: A tuple of vectors representing the data for variable Y.
+- `z::Tuple`: A tuple of vectors representing the data for variable Z.
+
+# Returns
+- `I::Float64`: The calculated conditional mutual information.
+
+# Details
+This function uses the k-nearest neighbors (k-NN) algorithm to estimate the conditional mutual information. The estimation is based on the number of neighbors of each point within a certain distance in different subspaces (Z, XZ, YZ). This method is particularly useful for high-dimensional data where histogram-based methods fail.
+"""
 function c_mutual(
     method::kNN,
     x::Tuple,
