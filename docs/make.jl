@@ -5,10 +5,10 @@ DocMeta.setdocmeta!(InformationTheory, :DocTestSetup, :(using InformationTheory)
 
 makedocs(;
     modules=[InformationTheory],
-    authors="tkrhsmt <tkrhsmt@gmail.com>",
+    authors="t2lab-it",
     sitename="InformationTheory.jl",
     format=Documenter.HTML(;
-        canonical="https://tkrhsmt.github.io/InformationTheory.jl",
+        canonical="https://t2lab-it.github.io/InformationTheory.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -30,6 +30,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/tkrhsmt/InformationTheory.jl",
+    repo="github.com/t2lab-it/InformationTheory.jl",
     devbranch="main",
 )

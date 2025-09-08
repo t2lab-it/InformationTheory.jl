@@ -1,6 +1,6 @@
 name = "InformationTheory"
 uuid = "abf28253-a0bd-4d92-895f-a1c5c03acb3e"
-authors = ["tkrhsmt <tkrhsmt@gmail.com>"]
+authors = ["t2lab-it"]
 version = "1.0.0-DEV"
 
 [deps]

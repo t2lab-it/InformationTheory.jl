@@ -20,4 +20,4 @@ CurrentModule = InformationTheory
 -   [KL情報量](API/KLdivergence.md)
 -   [条件付き相互情報量](API/ConditionalMutualInformation.md)
 
-このプロジェクトは，[GitHub](https://github.com/tkrhsmt/InformationTheory.jl)で開発されています．貢献やフィードバックを歓迎します．
+このプロジェクトは，[GitHub](https://github.com/t2lab-it/InformationTheory.jl)で開発されています．貢献やフィードバックを歓迎します．
